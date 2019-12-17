@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/item_border">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="190dp">
+    <ImageView
+        android:padding="2dp"
+        android:id="@+id/imgv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+       />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="20dp"
+        android:layout_marginLeft="2dp"
+        android:text="鞋子"/>
+
+        <TextView
+            android:id="@+id/tv_loca"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="15dp"
+            android:text="客厅/鞋柜"
+            android:background="@drawable/textview_border"
+            android:textColor="@color/red"
+            android:padding="3dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginBottom="1dp"
+        />
+</LinearLayout>

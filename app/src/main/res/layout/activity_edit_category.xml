@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:background="#ffffff"
+tools:context=".classify.EditCategoryActivity">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp">
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="取消"
+        android:textColor="@drawable/btn_account_forget"
+        android:textSize="20sp"
+        android:background="#00000000"
+        />
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="保存"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:background="@drawable/btn_account_login"
+        />
+</RelativeLayout>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+        <!--    atb是属性的意思-->
+        <LinearLayout
+            android:id="@+id/ly_goods_locat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:orientation="vertical">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </androidx.recyclerview.widget.RecyclerView>
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp">
+            <Button
+                android:id="@+id/btn_add_line"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                style="@style/btn_add_blue"
+                />
+        </RelativeLayout>
+        <Button
+            android:id="@+id/btn_edit_exclu_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/btn_oval_white_deepblue"
+            android:text="编辑专属标签"
+            android:textAlignment="center"
+            android:textColor="#177CB0"
+            android:textSize="25sp" />
+    </LinearLayout>
+</ScrollView>
+</LinearLayout>
+
+
+

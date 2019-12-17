@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_wgl"
+            android:icon="@drawable/ic_menu_wh"
+            android:title="未归位物品"/>
+        <item
+            android:id="@+id/nav_fl"
+            android:icon="@drawable/ic_menu_fl"
+            android:title="分类详情"/>
+        <item
+            android:id="@+id/nav_unused"
+            android:icon="@drawable/ic_menu_unused"
+            android:title="闲置转让"/>
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="设置"/>
+    </group>
+
+    <item android:title="联系">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="分享"/>
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="给予意见"/>
+        </menu>
+    </item>
+
+</menu>
