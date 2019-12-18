@@ -44,9 +44,12 @@ public class ExcluLabelActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exclu_label);
+        Intent intent=getIntent();
 
         helper=new MyHelper(this);
         init();
+        tv_name.setText(intent.getStringExtra("name"));
+
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);          //recyclerview里面采用线性布局
         recyclerView.setLayoutManager(layoutManager);
@@ -56,6 +59,7 @@ public class ExcluLabelActivity extends AppCompatActivity implements View.OnClic
         recyclerView.setAdapter(ga);
     }
     protected void init(){
+        tv_name=(TextView)findViewById(R.id.tv_name);
         btn_cancel=(Button) findViewById(R.id.btn_cancel);
         btn_cancel.setOnClickListener(this);
         btn_save=(Button) findViewById(R.id.btn_save);
@@ -86,6 +90,9 @@ public class ExcluLabelActivity extends AppCompatActivity implements View.OnClic
                 finish();
                 break;
             case R.id.btn_save:
+
+
+
 
         }
     }

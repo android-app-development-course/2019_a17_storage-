@@ -124,6 +124,7 @@ public class ClassifyActivity extends AppCompatActivity{
                     cursor.moveToFirst();
                     intent.putExtra("label", cursor.getString(2));
                     intent.putExtra("pid", cursor.getString(1));
+                    intent.putExtra("name",selectedNode.get(0).getName());
                     startActivity(intent);
                 }
                 else

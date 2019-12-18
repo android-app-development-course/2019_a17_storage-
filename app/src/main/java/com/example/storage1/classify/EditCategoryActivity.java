@@ -103,11 +103,18 @@ public class EditCategoryActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_edit_exclu_label:
+                for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                    RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
+                    EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
+                    class_date.add(et_goods_item.getText().toString());
+                }
+
+
                 labelflage=true;
 
                 Intent intent=new Intent(this,ExcluLabelActivity.class);
                 intent.putExtra("pid",(lastid+1)+"");
-
+                intent.putExtra("name",class_date.get(recyclerView.getChildCount()-1));
                 startActivity(intent);
                 break;
             case R.id.btn_add_line:
