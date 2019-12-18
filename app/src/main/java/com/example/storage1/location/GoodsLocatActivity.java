@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
@@ -39,28 +40,52 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
     private Button btn_add_line;
     private Button btn_cancel;
     private Button btn_save;
-    private TextView tv_name;
-    private EditText et_locat;
     private RecyclerView recyclerView;
     private ArrayList<Goods> goodsList = new ArrayList<>();
+    private List<String> location_date=new ArrayList<String>();
     private MyHelper helper;
     private SQLiteDatabase db;
     private ContentValues cv;
     private int n=1;
+    private int lastid;
+    private String pid;
+    private boolean flage=false; //判断是不是在原有的数据再添加位置
+    private MyHelper myHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods_locat);
+        Intent intent=getIntent();
+        String name;
+        Goods goods;
+        if(intent.getStringExtra("name")!=null){
+            name=intent.getStringExtra("name");
 
+            pid=intent.getStringExtra("id");
+             goods=new Goods("一级",name);
+            goodsList.add(goods);
+            Goods goods1 = new Goods(getLocatText(n), "");
+            goodsList.add(goods1);
+            n++;
+            flage=true;
+        }
+        else{
+             goods=new Goods("一级","");
+            goodsList.add(goods);
+            pid="0";//根节点
+        }
+        lastid=Integer.parseInt(intent.getStringExtra("lastid"));
+        myHelper=new MyHelper(GoodsLocatActivity.this);
         helper=new MyHelper(this);
         init();
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);          //recyclerview里面采用线性布局
         recyclerView.setLayoutManager(layoutManager);
-        Goods goods=new Goods("一级","");                         //一开始就显示一个一级标签
-        goodsList.add(goods);
+                          //一开始就显示一个一级标签
+
         GoodsAdapter ga=new GoodsAdapter(goodsList);
         recyclerView.setAdapter(ga);
+
     }
     protected void init(){
         btn_cancel=(Button) findViewById(R.id.btn_cancel);
@@ -78,6 +103,7 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
                     RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
                     EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
                     goodsList.get(i).setValue(et_goods_item.getText().toString());          //将已输入的值存入goodslist,以免添加新的一行原本的输入数据消失（没有用；分隔）
+
                 }
                 if (n<=5) {
                     Goods goods = new Goods(getLocatText(n), "");
@@ -94,31 +120,51 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
                 finish();
                 break;
             case R.id.btn_save:
-//                db = helper.getWritableDatabase();
-//                cv = new ContentValues();
-//                for (Goods g : goodsList) {
-//                    label.append(g.getLabel() + ";");
-//                }
-//                for (int i = 0; i < recyclerView.getChildCount(); i++) {                    //遍历recycleview，记录EditText的值
-//                    RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
-//                    EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
-//                    value.append(et_goods_item.getText().toString() + ";");          //每个值的分隔符
-//                }
-//                cv.put("label", label.toString());
-//                cv.put("value", value.toString());
-//                cv.put("name", tv_name.getText().toString());
-////                    cv.put("locat_id",);
-//                Cursor cursor = db.query("goods", null, "name=?", new String[]{tv_name.getText().toString()}, null, null, null);
-//                if (cursor.getCount() == 0)
-//                    db.insert("goods", null, cv);
-//                else {
-//                    db.update("goods", cv, "name=?", new String[]{tv_name.getText().toString()});
-//                }
-//                cursor.close();
-//                db.close();
-//                Toast.makeText(GoodsActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(GoodsActivity.this, GoodsShowActivity.class);
-//                startActivity(intent);
+                //获取数据
+                for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                    RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
+                    EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
+                    location_date.add(et_goods_item.getText().toString());
+                }
+                for(String loca :location_date)
+                Log.e("tz", "save_date: " + loca);
+             SQLiteDatabase db=myHelper.getWritableDatabase();
+             ContentValues values=new ContentValues();
+
+                if(flage){
+                for(int i=1;i<location_date.size();i++){
+                    if(i==1){
+                        values.put("pid",pid);
+                    }
+                    else{
+                        lastid+=1;
+                        values.put("pid",lastid+"");
+                    }
+                    values.put("name",location_date.get(i));
+                    db.insert("loca",null,values);
+                }
+
+                }
+                else{
+                    for(int i=0;i<location_date.size();i++){
+                        if(i==0){
+                            values.put("pid",pid);
+                        }
+                        else{
+                            lastid+=1;
+                            values.put("pid",lastid+"");
+                        }
+                        values.put("name",location_date.get(i));
+                        db.insert("loca",null,values);
+                    }
+                }
+            db.close();
+                Toast.makeText(GoodsLocatActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(GoodsLocatActivity.this,EditLocationActivity.class);
+                startActivity(intent);
+                break;
+
+
         }
     }
     protected String getLocatText(int n)

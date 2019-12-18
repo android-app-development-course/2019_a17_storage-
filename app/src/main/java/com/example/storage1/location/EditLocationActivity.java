@@ -34,6 +34,7 @@ public class EditLocationActivity extends AppCompatActivity{
     private EditListViewAdapter mAdapter;
     private List<Node> dataList = new ArrayList<>();
     private MyHelper myHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +74,7 @@ public class EditLocationActivity extends AppCompatActivity{
                selectedNode = mAdapter.getSelectedNode();
                selecteGoods=new ArrayList<String>();
                 for (Node n : selectedNode) {
-                    Log.e("xyh", "onCheckChange: " + n.getName());
+                    Log.e("xyh", "onCheckChange: " + n.getName()+n.getPid()+"  "+n.getId());
                     selecteGoods.add(n.getName());
                 }
             }
@@ -136,6 +137,15 @@ public class EditLocationActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 Intent intent2=new Intent(EditLocationActivity.this,GoodsLocatActivity.class);
+                SQLiteDatabase db=myHelper.getReadableDatabase();
+                Cursor cursor=db.query("loca",null,null,null,null,null,null);
+                cursor.moveToLast();
+                intent2.putExtra("lastid",cursor.getInt(0)+"");
+                if(mAdapter.getSelectedNode().size()!=0){
+                 cursor=db.query("loca",null,"name=?",new String[]{selectedNode.get(0).getName()},null,null,null);
+                cursor.moveToFirst();
+                intent2.putExtra("id",cursor.getInt(0)+"");
+                intent2.putExtra("name",cursor.getString(2));}
                 startActivity(intent2);
             }
         });

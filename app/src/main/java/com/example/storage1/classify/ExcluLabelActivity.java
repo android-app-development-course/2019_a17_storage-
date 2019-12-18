@@ -86,31 +86,7 @@ public class ExcluLabelActivity extends AppCompatActivity implements View.OnClic
                 finish();
                 break;
             case R.id.btn_save:
-//                db = helper.getWritableDatabase();
-//                cv = new ContentValues();
-//                for (Goods g : goodsList) {
-//                    label.append(g.getLabel() + ";");
-//                }
-//                for (int i = 0; i < recyclerView.getChildCount(); i++) {                    //遍历recycleview，记录EditText的值
-//                    RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
-//                    EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
-//                    value.append(et_goods_item.getText().toString() + ";");          //每个值的分隔符
-//                }
-//                cv.put("label", label.toString());
-//                cv.put("value", value.toString());
-//                cv.put("name", tv_name.getText().toString());
-////                    cv.put("locat_id",);
-//                Cursor cursor = db.query("goods", null, "name=?", new String[]{tv_name.getText().toString()}, null, null, null);
-//                if (cursor.getCount() == 0)
-//                    db.insert("goods", null, cv);
-//                else {
-//                    db.update("goods", cv, "name=?", new String[]{tv_name.getText().toString()});
-//                }
-//                cursor.close();
-//                db.close();
-//                Toast.makeText(GoodsActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(GoodsActivity.this, GoodsShowActivity.class);
-//                startActivity(intent);
+
         }
     }
 }
