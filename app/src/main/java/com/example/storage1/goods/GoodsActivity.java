@@ -113,6 +113,7 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);          //recyclerview里面采用线性布局
         recyclerView.setLayoutManager(layoutManager);
+
         contentUri=Uri.fromFile(
                 new File(Environment.getExternalStorageDirectory(), "/temp.jpg"));
     }
