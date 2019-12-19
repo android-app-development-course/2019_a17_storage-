@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.storage1.MyHelper;
 import com.example.storage1.R;
+import com.example.storage1.goods.GoodsActivity;
 import com.example.storage1.treelist.Node;
 import com.example.storage1.treelist.OnTreeNodeCheckedChangeListener;
 
@@ -30,6 +31,9 @@ public class SelectLocationActivity extends AppCompatActivity {
     private MyHelper myHelper;
     private ArrayList<String> namelist;
     private String Selectedpid;
+    private String flage;  //判断执行位置的选择是转移位置的时候，还是选择位置的时候
+    private String label;
+    private String classify;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,9 +46,18 @@ public class SelectLocationActivity extends AppCompatActivity {
 
         initData();
 
+
+
         //获得上个页面的需要移动物品
+
         final Intent intent=getIntent();
-        namelist =intent.getExtras().getStringArrayList("namelist");
+        flage=intent.getStringExtra("flage");
+        if(flage.equals("move"))
+            namelist =intent.getExtras().getStringArrayList("namelist");
+        if (flage.equals("cl")){
+            label=intent.getStringExtra("label");
+            classify=intent.getStringExtra("classify");
+        }
 
 
 
@@ -73,33 +86,59 @@ public class SelectLocationActivity extends AppCompatActivity {
 
                 List<Node> selectedNode = mAdapter.getSelectedNode();
                 for (Node n : selectedNode) {
-                    Log.e("xyh", "onCheckChange: " + n.getName());
+                    Log.e("xyh", "onCheckChange: " + n.getName()+" pid"+n.getId());
                     Selectedpid=n.getId();
 
                 }
             }
         });
+        //取消按钮
         select_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1=new Intent(SelectLocationActivity.this,EditLocationActivity.class);
-                startActivity(intent1);
+             if(flage.equals("move")) {
+                 Intent intent1 = new Intent(SelectLocationActivity.this, EditLocationActivity.class);
+                 startActivity(intent1);
+             }
+             if(flage.equals("cl")) finish();
 
             }
         });
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SQLiteDatabase db=myHelper.getWritableDatabase();
-                ContentValues values=new ContentValues();
-                values.put("pid",Selectedpid);
-                for(String name:namelist){
-                    int number=db.update("goods",values,"name=?",new String[]{name});
+                if(flage.equals("move")) {
+                    SQLiteDatabase db = myHelper.getWritableDatabase();
+                    ContentValues values = new ContentValues();
+                    values.put("pid", Selectedpid);
+                    for (String name : namelist) {
+                        int number = db.update("goods", values, "name=?", new String[]{name});
+                    }
+                    db.close();
+                    Toast.makeText(SelectLocationActivity.this, "转移成功", Toast.LENGTH_SHORT).show();
+                    Intent intent1 = new Intent(SelectLocationActivity.this, EditLocationActivity.class);
+                    startActivity(intent1);
                 }
-                db.close();
-                Toast.makeText(SelectLocationActivity.this,"转移成功",Toast.LENGTH_SHORT).show();
-                Intent intent1=new Intent(SelectLocationActivity.this,EditLocationActivity.class);
-                startActivity(intent1);
+                if(flage.equals("cl")){
+
+                  List<Node> LocaNode=mAdapter.getClassify();
+                 StringBuilder Loca=new StringBuilder();
+
+                    Intent intent1=new Intent(SelectLocationActivity.this, GoodsActivity.class);
+                    for(int i=LocaNode.size()-1;i>=0;--i)
+                        Loca.append(LocaNode.get(i).getName()+"/");
+                    intent1.putExtra("location",Loca.toString());
+                    intent1.putExtra("classify",classify);
+                    intent1.putExtra("label",label);
+                    intent1.putExtra("pid",LocaNode.get(0).getId());
+                    startActivity(intent1);
+                    finish();
+                }
+
+
+
+
+
             }
         });
     }

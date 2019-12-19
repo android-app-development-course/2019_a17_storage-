@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.storage1.DividerGridItemDecoration;
+import com.example.storage1.classify.SelecteClassActivity;
 import com.example.storage1.diaoog.PublishDialog;
 import com.example.storage1.R;
 import com.example.storage1.goods.GoodsActivity;
@@ -53,14 +54,14 @@ public class GoodsFragment extends Fragment {
                     publishDialog.setLinkClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(getContext(), "链接导入", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "添加分类", Toast.LENGTH_SHORT).show();
                         }
                     });
                     publishDialog.setPhotoClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
 //                            Toast.makeText(getContext(), "拍照添加", Toast.LENGTH_SHORT).show();
-                            Intent intent=new Intent(getContext(), GoodsActivity.class);
+                            Intent intent=new Intent(getContext(), SelecteClassActivity.class);
                             startActivity(intent);
 
 
@@ -72,7 +73,7 @@ public class GoodsFragment extends Fragment {
                     publishDialog.setCodeClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(getContext(), "评估", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "添加位置", Toast.LENGTH_SHORT).show();
 
                         }
                     });

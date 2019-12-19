@@ -28,7 +28,9 @@ import com.bigkoo.alertview.OnItemClickListener;
 import com.example.storage1.MyHelper;
 import com.example.storage1.R;
 import com.example.storage1.goods.Goods;
+import com.example.storage1.goods.GoodsActivity;
 import com.example.storage1.goods.GoodsAdapter;
+import com.example.storage1.treelist.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +45,7 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
     private RecyclerView recyclerView;
     private ArrayList<Goods> goodsList = new ArrayList<>();
     private List<String> location_date=new ArrayList<String>();
-    private MyHelper helper;
+
     private SQLiteDatabase db;
     private ContentValues cv;
     private int n=1;
@@ -51,11 +53,22 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
     private String pid;
     private boolean flage=false; //判断是不是在原有的数据再添加位置
     private MyHelper myHelper;
+    private Intent intent;
+    private String label;
+    private String classify;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods_locat);
-        Intent intent=getIntent();
+        intent=getIntent();
+        myHelper=new MyHelper(GoodsLocatActivity.this);
+        if (intent.getStringExtra("flage").equals("cl")){
+            label=intent.getStringExtra("label");
+            classify=intent.getStringExtra("classify");
+        }
+
+
+
         String name;
         Goods goods;
         if(intent.getStringExtra("name")!=null){
@@ -74,9 +87,15 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
             goodsList.add(goods);
             pid="0";//根节点
         }
-        lastid=Integer.parseInt(intent.getStringExtra("lastid"));
-        myHelper=new MyHelper(GoodsLocatActivity.this);
-        helper=new MyHelper(this);
+        //去数据库最后的递增id
+        SQLiteDatabase db=myHelper.getReadableDatabase();
+        Cursor cursor=db.query("loca",null,null,null,null,null,null);
+        cursor.moveToLast();
+        lastid=cursor.getInt(0);
+
+
+
+
         init();
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);          //recyclerview里面采用线性布局
@@ -128,6 +147,7 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
                 }
                 for(String loca :location_date)
                 Log.e("tz", "save_date: " + loca);
+
              SQLiteDatabase db=myHelper.getWritableDatabase();
              ContentValues values=new ContentValues();
 
@@ -160,8 +180,27 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
                 }
             db.close();
                 Toast.makeText(GoodsLocatActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
-                Intent intent=new Intent(GoodsLocatActivity.this,EditLocationActivity.class);
-                startActivity(intent);
+
+            if(intent.getStringExtra("flage").equals("edit")){
+                Intent intent1=new Intent(GoodsLocatActivity.this,EditLocationActivity.class);
+                startActivity(intent1);}
+                if(intent.getStringExtra("flage").equals("cl")){
+
+
+                    StringBuilder Loca=new StringBuilder();
+
+                    Intent intent1=new Intent(GoodsLocatActivity.this, GoodsActivity.class);
+                    for(int i=location_date.size()-1;i>=0;--i)
+                        Loca.append(location_date.get(i)+"/");
+                    intent1.putExtra("location",Loca.toString());
+                    intent1.putExtra("classify",classify);
+                    intent1.putExtra("label",label);
+                    lastid+=1;
+                    intent1.putExtra("pid",lastid+"");
+                    startActivity(intent1);
+                    finish();
+                }
+
                 break;
 
 

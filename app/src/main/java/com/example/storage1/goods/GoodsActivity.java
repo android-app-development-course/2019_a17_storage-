@@ -37,7 +37,9 @@ import com.bigkoo.alertview.OnItemClickListener;
 import com.example.storage1.EditTextDialog;
 import com.example.storage1.MyHelper;
 import com.example.storage1.R;
+import com.example.storage1.location.EditLocationActivity;
 import com.example.storage1.location.GoodsLocatActivity;
+import com.example.storage1.location.SelectLocationActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -76,6 +78,11 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
     private MyHelper helper;
     private SQLiteDatabase db;
     private ContentValues cv;
+
+
+    private String classify;
+    private String labels;
+    private String location;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +90,20 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         builder.detectFileUriExposure();
+
+
+        //获得分类数据和标签属性
+        Intent intent=getIntent();
+        classify=intent.getStringExtra("classify");
+        labels=intent.getStringExtra("label");
+        if(intent.getStringExtra("location")!=null){
+            Log.e("xyh", "location: " + intent.getStringExtra("location"));
+            Log.e("xyh", "pid: " + intent.getStringExtra("pid"));
+        }
+        Log.e("xyh", "classify: " + classify);
+        Log.e("xyh", "label: " + labels);
+
+
 
 
         helper=new MyHelper(this);
@@ -219,10 +240,23 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch(menuItem.getItemId()) {
                     case R.id.btn_choose_locat:
-                        Toast.makeText(GoodsActivity.this,"choose",Toast.LENGTH_SHORT).show();
+                      Intent intent=new Intent(GoodsActivity.this, SelectLocationActivity.class);
+                      intent.putExtra("label",labels);
+                      intent.putExtra("classify",classify);
+                      intent.putExtra("flage","cl");
+                      startActivity(intent);
+                        finish();
                         break;
                     case R.id.btn_edit_locat:
-                        startActivity(new Intent(GoodsActivity.this, GoodsLocatActivity.class));
+                      Intent intent1=new Intent(GoodsActivity.this, GoodsLocatActivity.class);
+                      intent1.putExtra("flage","cl");
+                        intent1.putExtra("label",labels);
+                        intent1.putExtra("classify",classify);
+                        startActivity(intent1);
+                        finish();
+                        break;
+
+
                 }
                 return false;
             }

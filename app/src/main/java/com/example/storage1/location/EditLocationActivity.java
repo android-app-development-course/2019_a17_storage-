@@ -97,6 +97,7 @@ public class EditLocationActivity extends AppCompatActivity{
                     return;
                 }
                 intent.putStringArrayListExtra("namelist",selecteGoods);
+                intent.putExtra("flage","move");
                 startActivity(intent);
                 finish();
             }
@@ -138,11 +139,11 @@ public class EditLocationActivity extends AppCompatActivity{
             public void onClick(View view) {
                 Intent intent2=new Intent(EditLocationActivity.this,GoodsLocatActivity.class);
                 SQLiteDatabase db=myHelper.getReadableDatabase();
-                Cursor cursor=db.query("loca",null,null,null,null,null,null);
-                cursor.moveToLast();
-                intent2.putExtra("lastid",cursor.getInt(0)+"");
+//                cursor=db.query("loca",null,null,null,null,null,null);
+////                cursor.moveToLast();
+////                intent2.putExtra("lastid",cursor.getInt(0)+"");
                 if(mAdapter.getSelectedNode().size()!=0){
-                 cursor=db.query("loca",null,"name=?",new String[]{selectedNode.get(0).getName()},null,null,null);
+                    Cursor  cursor=db.query("loca",null,"name=?",new String[]{selectedNode.get(0).getName()},null,null,null);
                 cursor.moveToFirst();
                 intent2.putExtra("id",cursor.getInt(0)+"");
                 intent2.putExtra("name",cursor.getString(2));}

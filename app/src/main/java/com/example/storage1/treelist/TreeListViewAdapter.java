@@ -174,7 +174,28 @@ public abstract class TreeListViewAdapter extends BaseAdapter {
             mAllNodes = new ArrayList<Node>();
         return mAllNodes;
     }
+    /**
+     * 分类
+     *
+     * @return
+     */
+    public List<Node> getClassify(){
+        List<Node> cNode = new ArrayList<Node>();
+        for (int i = 0; i < mAllNodes.size(); i++) {
+            Node n = mAllNodes.get(i);
+            if (n.isChecked()) {
+                getParent(cNode,n);
 
+            }
+        }
+        return cNode;
+    }
+    protected void getParent(List<Node> cNode,Node n){
+        cNode.add(n);
+        if(n.getParent()!=null){
+            getParent(cNode,n.getParent());
+        }
+    }
     /**
      * 获取所有选中节点
      *

@@ -13,7 +13,7 @@ public class MyHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE label(id INTEGER PRIMARY KEY AUTOINCREMENT, pid VARCHAR(3),label VARCHAR(50)) ");
         db.execSQL("CREATE TABLE class(id INTEGER PRIMARY KEY AUTOINCREMENT, pid VARCHAR(3),name VARCHAR(50)) ");
         db.execSQL("CREATE TABLE loca(id INTEGER PRIMARY KEY AUTOINCREMENT, pid VARCHAR(3),name VARCHAR(50)) ");
-        db.execSQL("CREATE TABLE goods(_id INTEGER PRIMARY KEY AUTOINCREMENT,id INTEGER default(-1),pid VARCHAR(3),categ_pid VARCHAR(3),name VARCHAR(50),label VARCHAR(100),value VARCHAR(100),img BLBO)");
+        db.execSQL("CREATE TABLE goods(_id INTEGER PRIMARY KEY AUTOINCREMENT,id INTEGER default(-1),pid VARCHAR(3),class VARCHAR(50),name VARCHAR(50),label VARCHAR(100),value VARCHAR(100),img BLBO,location VARCHAR(50))");
 
 
     }

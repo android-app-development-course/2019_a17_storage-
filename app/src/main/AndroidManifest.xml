@@ -30,6 +30,7 @@
         <activity android:name=".location.GoodsLocatActivity"/>
         <activity android:name=".classify.EditCategoryActivity"/>
         <activity android:name=".classify.ExcluLabelActivity"/>
+        <activity android:name=".classify.SelecteClassActivity"/>
     </application>
 
 </manifest>
