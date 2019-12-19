@@ -83,6 +83,7 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
     private String classify;
     private String labels;
     private String location;
+    private String pid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +100,7 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
         if(intent.getStringExtra("location")!=null){
             Log.e("xyh", "location: " + intent.getStringExtra("location"));
             Log.e("xyh", "pid: " + intent.getStringExtra("pid"));
+
         }
         Log.e("xyh", "classify: " + classify);
         Log.e("xyh", "label: " + labels);
@@ -115,6 +117,8 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                 new File(Environment.getExternalStorageDirectory(), "/temp.jpg"));
     }
     protected void init(){
+        tv_name=(TextView) findViewById(R.id.tv_name);
+
         btn_more=(Button) findViewById(R.id.btn_more);
         btn_more.setOnClickListener(this);
         btn_cancel=(Button) findViewById(R.id.btn_cancel);
