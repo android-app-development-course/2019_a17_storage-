@@ -41,7 +41,7 @@ public class EditCategoryActivity extends AppCompatActivity implements View.OnCl
     private RecyclerView recyclerView;
     private ArrayList<Goods> goodsList = new ArrayList<>();
     private MyHelper helper;
-    private SQLiteDatabase db;
+
     private ContentValues cv;
     private List<String> class_date=new ArrayList<String>();
     private int n=1;
@@ -50,7 +50,7 @@ public class EditCategoryActivity extends AppCompatActivity implements View.OnCl
     private String pid;
     private boolean flage=false; //判断是不是在原有的数据再添加位置
     private MyHelper myHelper;
-    private boolean labelflage=false;//判断是否添加了专属标签
+
 
 
     @Override
@@ -78,6 +78,7 @@ public class EditCategoryActivity extends AppCompatActivity implements View.OnCl
             pid="0";//根节点
         }
         lastid=Integer.parseInt(intent.getStringExtra("lastid"));
+        Log.e("tz", "lastid: " + lastid);
         myHelper=new MyHelper(EditCategoryActivity.this);
         helper=new MyHelper(this);
         init();
@@ -103,6 +104,7 @@ public class EditCategoryActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_edit_exclu_label:
+                save_date();
                 for (int i = 0; i < recyclerView.getChildCount(); i++) {
                     RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
                     EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
@@ -110,12 +112,16 @@ public class EditCategoryActivity extends AppCompatActivity implements View.OnCl
                 }
 
 
-                labelflage=true;
+
 
                 Intent intent=new Intent(this,ExcluLabelActivity.class);
-                intent.putExtra("pid",(lastid+1)+"");
+                lastid+=1;
+                intent.putExtra("pid",lastid+"");
+                Log.e("tz", "pid: " + lastid);
                 intent.putExtra("name",class_date.get(recyclerView.getChildCount()-1));
+                intent.putExtra("flage","0");
                 startActivity(intent);
+                finish();
                 break;
             case R.id.btn_add_line:
                 for (int i = 0; i < recyclerView.getChildCount(); i++) {                    //遍历recycleview，记下已输入的值
@@ -138,57 +144,67 @@ public class EditCategoryActivity extends AppCompatActivity implements View.OnCl
                 finish();
                 break;
             case R.id.btn_save:
-                //获取数据
-                for (int i = 0; i < recyclerView.getChildCount(); i++) {
-                    RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
-                    EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
-                    class_date.add(et_goods_item.getText().toString());
-                }
-                for(String loca :class_date)
-                    Log.e("tz", "save_date: " + loca);
+                save_date();
                 SQLiteDatabase db=myHelper.getWritableDatabase();
-                ContentValues values=new ContentValues();
-
-                if(flage){
-                    for(int i=1;i<class_date.size();i++){
-                        if(i==1){
-                            values.put("pid",pid);
-                        }
-                        else{
-                            lastid+=1;
-                            values.put("pid",lastid+"");
-                        }
-                        values.put("name",class_date.get(i));
-                        db.insert("class",null,values);
-                    }
-
-                }
-                else{
-                    for(int i=0;i<class_date.size();i++){
-                        if(i==0){
-                            values.put("pid",pid);
-                        }
-                        else{
-                            lastid+=1;
-                            values.put("pid",lastid+"");
-                        }
-                        values.put("name",class_date.get(i));
-                        db.insert("class",null,values);
-                    }
-                }
-                if(!labelflage){
-                values.put("pid",(lastid+1)+"");
-                values.put("label","");
-                db.insert("label",null,values);}
+                    ContentValues values1= new ContentValues();
+                    lastid+=1;
+                    values1.put("pid",lastid+"");
+                    values1.put("label","");
+                    db.insert("label",null,values1);
                 db.close();
-                Toast.makeText(EditCategoryActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
-
                 Intent intent2=new Intent(EditCategoryActivity.this, ClassifyActivity.class);
                 startActivity(intent2);
-                finish();
                 break;
         }
     }
+
+    protected void save_date(){
+        //获取数据
+        for (int i = 0; i < recyclerView.getChildCount(); i++) {
+            RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
+            EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
+            class_date.add(et_goods_item.getText().toString());
+        }
+        for(String loca :class_date)
+            Log.e("tz", "save_date: " + loca);
+        SQLiteDatabase db=myHelper.getWritableDatabase();
+        ContentValues values=new ContentValues();
+
+        if(flage){
+            for(int i=1;i<class_date.size();i++){
+                if(i==1){
+                    values.put("pid",pid);
+                }
+                else{
+                    lastid+=1;
+                    values.put("pid",lastid+"");
+                }
+                values.put("name",class_date.get(i));
+                db.insert("class",null,values);
+            }
+
+        }
+        else{
+            for(int i=0;i<class_date.size();i++){
+                if(i==0){
+                    values.put("pid",pid);
+                }
+                else{
+                    lastid+=1;
+                    values.put("pid",lastid+"");
+                }
+                values.put("name",class_date.get(i));
+                db.insert("class",null,values);
+            }
+        }
+
+
+        Toast.makeText(EditCategoryActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
+         db.close();
+
+        finish();
+    }
+
     protected String getLocatText(int n)
     {
         switch (n) {

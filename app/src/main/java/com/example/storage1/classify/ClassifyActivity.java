@@ -72,7 +72,7 @@ public class ClassifyActivity extends AppCompatActivity{
                 //获取所有选中节点
                 List<Node> selectedNode = mAdapter.getSelectedNode();
                 for (Node n : selectedNode) {
-                    Log.e("xyh", "onCheckChange: " + n.getName());
+                    Log.e("xyh", "onCheckChange: " + n.getName()+" id:"+n.getId());
                 }
             }
         });
@@ -88,7 +88,7 @@ public class ClassifyActivity extends AppCompatActivity{
 
                 Intent intent1=new Intent(ClassifyActivity.this,EditCategoryActivity.class);
                 SQLiteDatabase db=myHelper.getReadableDatabase();
-                Cursor cursor=db.query("loca",null,null,null,null,null,null);
+                Cursor cursor=db.query("class",null,null,null,null,null,null);
                 cursor.moveToLast();
                 intent1.putExtra("lastid",cursor.getInt(0)+"");
                 if(mAdapter.getSelectedNode().size()!=0){
@@ -98,7 +98,7 @@ public class ClassifyActivity extends AppCompatActivity{
                     intent1.putExtra("id",cursor.getInt(0)+"");
                     intent1.putExtra("name",cursor.getString(2));}
                 startActivity(intent1);
-                finish();
+
 
 
 
@@ -120,11 +120,12 @@ public class ClassifyActivity extends AppCompatActivity{
                 SQLiteDatabase db=myHelper.getReadableDatabase();
                 //取出专属标签
                 if(selectedNode.size()!=0) {
-                    Cursor cursor = db.query("label", null, "pid=?", new String[]{selectedNode.get(0).getPid()}, null, null, null);
+                    Cursor cursor = db.query("label", null, "pid=?", new String[]{selectedNode.get(0).getId()}, null, null, null);
                     cursor.moveToFirst();
                     intent.putExtra("label", cursor.getString(2));
                     intent.putExtra("pid", cursor.getString(1));
                     intent.putExtra("name",selectedNode.get(0).getName());
+                    intent.putExtra("flage","1");
                     startActivity(intent);
                 }
                 else
