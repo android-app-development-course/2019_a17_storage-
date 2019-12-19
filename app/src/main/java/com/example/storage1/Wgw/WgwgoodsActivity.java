@@ -1,5 +1,6 @@
 package com.example.storage1.Wgw;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.storage1.DividerGridItemDecoration;
 import com.example.storage1.R;
+import com.example.storage1.goods.GoodsActivity;
 
 public class WgwgoodsActivity extends AppCompatActivity {
     private Toolbar mtoolbar;
@@ -29,7 +31,8 @@ public class WgwgoodsActivity extends AppCompatActivity {
         mWgladapter.setOnItemClickListener(new WgwAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {
-                Toast.makeText(getApplicationContext(), "click " + position, Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(WgwgoodsActivity.this, GoodsActivity.class);
+                startActivity(intent);
             }
         });
         mWgladapter.setOnItemLongClickListener(new WgwAdapter.OnItemLongClickListener() {
