@@ -131,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                         break;
                     case R.id.nav_fl:
-
                         Intent intent1=new Intent(MainActivity.this, ClassifyActivity.class);
                         startActivity(intent1);
                         break;

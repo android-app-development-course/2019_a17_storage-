@@ -62,19 +62,7 @@ public class ListViewAdapter extends TreeListViewAdapter {
 //        values.put("name","屏风");
 //        db.insert("loca",null,values);
 //
-//        values.put("pid","5");
-//        values.put("name","大衣");
-//        db.insert("goods",null,values);
-//        values.put("pid","10");
-//        values.put("name","钥匙");
-//        db.insert("goods",null,values);
-//        values.put("pid","9");
-//        values.put("name","遥控器");
-//        db.insert("goods",null,values);
-//        values.put("pid","8");
-//        values.put("name","剪刀");
-//        db.insert("goods",null,values);
-//
+
 //
 //        values.put("pid","4");
 //        values.put("name","第一层抽屉");
@@ -84,13 +72,7 @@ public class ListViewAdapter extends TreeListViewAdapter {
 //        values.put("name","第三层抽屉");
 //        db.insert("loca",null,values);
 //
-//        values.put("pid","7");
-//        values.put("name","砂锅");
-//        db.insert("goods",null,values);
-//        values.put("name","木质筷子");
-//        db.insert("goods",null,values);
-//        values.put("name","碗");
-//        db.insert("goods",null,values);
+
 //
 //        values.put("pid","6");
 //        values.put("name","小抽屉");
@@ -100,17 +82,7 @@ public class ListViewAdapter extends TreeListViewAdapter {
 //        values.put("name","小柜子");
 //        db.insert("loca",null,values);
 //
-//        values.put("pid","11");
-//        values.put("name","结婚证");
-//        db.insert("goods",null,values);
-//
-//        values.put("pid","12");
-//        values.put("name","房产证");
-//        db.insert("goods",null,values);
-//
-//        values.put("pid","13");
-//        values.put("name","户口本");
-//        db.insert("goods",null,values);
+
 //        db.close();
     }
 

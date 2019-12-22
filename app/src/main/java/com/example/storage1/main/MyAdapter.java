@@ -1,6 +1,7 @@
 package com.example.storage1.main;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +17,14 @@ import java.util.List;
 
 class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
-    private List<Integer> mDates;
-    private int[] img;
+    private ArrayList<Card> CardList=new ArrayList<>();                     //先实例一个对象，判断是否为空来判断数据库是否有数据
+
     private Context mcontext;
 
 
-    public MyAdapter(Context context){
+    public MyAdapter(Context context,ArrayList<Card> CardList){
         this.mcontext=context;
-        initData();
+        this.CardList=CardList;
     }
 
 
@@ -59,29 +60,31 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     }
     @Override
     public void onBindViewHolder(MyViewHolder holder,final int position){
-        holder.tv_name.setText("第"+mDates.get(position).toString()+"双鞋子");
-        holder.imgv.setImageResource(img[position]);
+        if (CardList.size()!=0) {
+            Card card = CardList.get(position);
+            holder.tv_name.setText(card.getName());
+            holder.tv_loca.setText(card.getLoca());
+            holder.imgv.setImageBitmap(BitmapFactory.decodeByteArray(card.getImg(), 0, card.getImg().length));
 
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onClick(position);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        listener.onClick(position);
+                    }
                 }
-            }
-        });
+            });
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (longClickListener != null) {
-                    longClickListener.onClick(position);
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (longClickListener != null) {
+                        longClickListener.onClick(position);
+                    }
+                    return true;
                 }
-                return true;
-            }
-        });
-
+            });
+        }
 
 
 
@@ -89,8 +92,9 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     @Override
 
     public int getItemCount(){
-        return mDates.size();
+        return CardList.size();
     }
+
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView tv_name;
         TextView tv_loca;
@@ -103,21 +107,6 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             imgv = (ImageView) view.findViewById(R.id.imgv);
 
         }
-    }
-
-
-    protected void initData() {
-        mDates = new ArrayList<Integer>();
-        for (int i = 1; i <= 10; i++) {
-            mDates.add(i);
-        }
-
-        img=new int[]{
-                R.drawable.shoes, R.drawable.shoes1, R.drawable.shoes2,
-                R.drawable.shoes3, R.drawable.shoes3, R.drawable.shoes2,
-                R.drawable.shoes1,
-                R.drawable.shoes, R.drawable.shoes1, R.drawable.shoes
-        };
     }
 }
 

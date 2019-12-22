@@ -23,5 +23,6 @@
         android:focusable="false"
         android:textIsSelectable="false"
         android:background="@null"
+        android:textColor="@color/black"
         android:textSize="18sp"/>
 </RelativeLayout>

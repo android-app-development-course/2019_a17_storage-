@@ -74,15 +74,6 @@
                     android:src="@drawable/red_shoes"
                     android:layout_centerHorizontal="true"
                     />
-                <ImageButton
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/iv_goods"
-                    android:layout_alignBottom="@id/iv_goods"
-                    android:src="@mipmap/photo"
-                    android:scaleType="fitXY"
-                    android:background="#00000000"/>
             </RelativeLayout>
             <!--    atb是属性的意思-->
             <LinearLayout
@@ -152,18 +143,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 </androidx.recyclerview.widget.RecyclerView>
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginRight="20dp">
-                    <Button
-                        android:id="@+id/btn_add_line"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        style="@style/btn_add_blue"
-                        />
-                </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

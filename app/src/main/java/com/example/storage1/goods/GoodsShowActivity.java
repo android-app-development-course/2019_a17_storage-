@@ -7,10 +7,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,6 +37,9 @@ public class GoodsShowActivity extends AppCompatActivity implements View.OnClick
     private Button btn_edit;
     private TextView tv_name;
     private EditText et_locat;
+    private TextView et_category;
+    private ImageView iv_goods;
+
     private RecyclerView recyclerView;
     private String []label;
     private String []value;
@@ -47,9 +52,10 @@ public class GoodsShowActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods_show);
-
         helper = new MyHelper(this);
         init();
+        Intent intent=getIntent();
+        tv_name.setText(intent.getStringExtra("name"));
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);          //recyclerview里面采用线性布局
         recyclerView.setLayoutManager(layoutManager);
@@ -58,8 +64,11 @@ public class GoodsShowActivity extends AppCompatActivity implements View.OnClick
         if (cursor.getCount() != 0) {
             cursor.moveToNext();
             //位置
-            label = cursor.getString(6).split(";");
-            value = cursor.getString(7).split(";");
+            iv_goods.setImageBitmap(BitmapFactory.decodeByteArray(cursor.getBlob(7), 0, cursor.getBlob(7).length));
+            et_locat.setText(cursor.getString(8));
+            et_category.setText(cursor.getString(3));
+            label = cursor.getString(5).split(";");
+            value = cursor.getString(6).split(";");
             for (int i = 0; i < label.length; ++i) {
                 Goods goods = new Goods(label[i], value[i]);
                 if (!label[i].equals("")&&!value.equals(""))
@@ -78,12 +87,17 @@ public class GoodsShowActivity extends AppCompatActivity implements View.OnClick
         btn_edit.setOnClickListener(this);
         tv_name=(TextView) findViewById(R.id.tv_name);
         et_locat=(EditText) findViewById(R.id.et_locat);
+        et_category=(TextView) findViewById(R.id.et_category);
+        iv_goods=(ImageView) findViewById(R.id.iv_goods);
     }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_edit:
-//                Intent intent=new Intent(this,);
+                Intent intent=new Intent(this,GoodsActivity.class);
+                intent.putExtra("name",tv_name.getText().toString());
+                intent.putExtra("isNew","false");            //不是新建界面进去的
+                startActivity(intent);
                 break;
             case R.id.btn_back:
                 finish();

@@ -21,7 +21,6 @@
             android:id="@+id/edit_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="添加属性名"
             android:textColorHint="#808080"
             android:textSize="18sp"
             android:textColor="#000000"

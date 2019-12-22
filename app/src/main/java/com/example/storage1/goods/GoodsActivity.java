@@ -6,15 +6,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ClipData;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
@@ -41,6 +45,8 @@ import com.example.storage1.location.EditLocationActivity;
 import com.example.storage1.location.GoodsLocatActivity;
 import com.example.storage1.location.SelectLocationActivity;
 
+import net.steamcrafted.loadtoast.LoadToast;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -58,11 +64,11 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
     private static final int PHOTO_CLIP = 2;
     private Bitmap imgbitmap;
     private Uri contentUri;
-    private byte[] imgbyte; //图片字节数组
+    private byte[] imgbyte=new byte[] {};; //图片字节数组
 
     private Uri uritempFile;
     private static final String IMAGE_FILE_LOCATION = "file:///sdcard/temp.jpg";
-
+    //layout控件
     private Button btn_more;
     private Button btn_add_line;
     private Button btn_cancel;
@@ -70,8 +76,12 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
     private ImageButton ib_photo;
     private TextView tv_name;
     private EditText et_locat;
-    private RecyclerView recyclerView;
+    private TextView et_category;
     private ImageView iv_goods;
+
+    private String []label1;                                                            //取数据库的值
+    private String []value1;                                                            //取数据库
+    private RecyclerView recyclerView;
     private StringBuilder label=new StringBuilder();                                    //保存所有标签的名字，以；分隔
     private StringBuilder value=new StringBuilder();                                    //保存所有标签的值，以；分隔
     private ArrayList<Goods> goodsList = new ArrayList<>();
@@ -88,38 +98,62 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods);
+        init();
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         builder.detectFileUriExposure();
-
-
-        //获得分类数据和标签属性
-        Intent intent=getIntent();
-        classify=intent.getStringExtra("classify");
-        labels=intent.getStringExtra("label");
-        if(intent.getStringExtra("location")!=null){
-            Log.e("xyh", "location: " + intent.getStringExtra("location"));
-            Log.e("xyh", "pid: " + intent.getStringExtra("pid"));
-
-        }
-        Log.e("xyh", "classify: " + classify);
-        Log.e("xyh", "label: " + labels);
-
-
-
-
         helper=new MyHelper(this);
-        init();
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);          //recyclerview里面采用线性布局
         recyclerView.setLayoutManager(layoutManager);
+        Intent intent=getIntent();
+        labels=intent.getStringExtra("label");
+        if (intent.getStringExtra("name").equals("")) {                 //没有名字说明是新的界面
+            //弹出对话框要求用户输入物品名称
+            EditTextDialog dialog = new EditTextDialog(new EditTextDialog.PriorityListener() {
+                @Override
+                public void getText(String string) {
+                    tv_name.setText(string);
+                }
+            }, new SpannableString("请输入物品名称"));
+            dialog.setCancelable(false);
+            dialog.show(getSupportFragmentManager());
+        }
+        else {
+            tv_name.setText(intent.getStringExtra("name"));
+        }
+        //获得类别数据和标签属性
+        classify=intent.getStringExtra("classify");
+        location=intent.getStringExtra("location");
+        if(location!=null){
+            et_locat.setText(location);
+        }
+        et_category.setText(classify);
+        db = helper.getReadableDatabase();
+        Cursor cursor = db.query("goods", null, "name=?", new String[]{tv_name.getText().toString()}, null, null, null);
+        if (cursor.getCount() != 0) {
+            cursor.moveToNext();
+            //位置
+            label1 = cursor.getString(5).split(";");
+            value1 = cursor.getString(6).split(";");
+            for (int i = 0; i < label1.length; ++i) {
+                Goods goods = new Goods(label1[i], value1[i]);
+                if (!label1[i].equals("") && !value1.equals(""))                            //防止啥都没输入还显示出来
+                    goodsList.add(goods);
+            }
+            et_locat.setText(cursor.getString(8));
+            et_category.setText(cursor.getString(3));
+            iv_goods.setImageBitmap(BitmapFactory.decodeByteArray(cursor.getBlob(7), 0, cursor.getBlob(7).length));
+            cursor.close();
+            db.close();
+            GoodsAdapter ga = new GoodsAdapter(goodsList);
+            recyclerView.setAdapter(ga);
+        }
 
         contentUri=Uri.fromFile(
                 new File(Environment.getExternalStorageDirectory(), "/temp.jpg"));
     }
     protected void init(){
-        tv_name=(TextView) findViewById(R.id.tv_name);
-
         btn_more=(Button) findViewById(R.id.btn_more);
         btn_more.setOnClickListener(this);
         btn_cancel=(Button) findViewById(R.id.btn_cancel);
@@ -128,8 +162,10 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
         btn_save.setOnClickListener(this);
         btn_add_line=(Button) findViewById(R.id.btn_add_line);
         btn_add_line.setOnClickListener(this);
+
         tv_name=(TextView) findViewById(R.id.tv_name);
         et_locat=(EditText) findViewById(R.id.et_locat);
+        et_category=(TextView) findViewById(R.id.et_category);
         iv_goods=(ImageView)findViewById(R.id.iv_goods);
         ib_photo=(ImageButton) findViewById(R.id.ib_photo);
         ib_photo.setOnClickListener(this);
@@ -153,10 +189,8 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                                         Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);//action
                                         intent1.putExtra(MediaStore.EXTRA_OUTPUT,
                                                 contentUri);
-
                                         startActivityForResult(intent1,
                                                 PHOTO_PZ);
-
                                         break;
                                     case 1:
                                         Intent intent = new Intent();
@@ -189,51 +223,42 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                         GoodsAdapter ga=new GoodsAdapter(goodsList);
                         recyclerView.setAdapter(ga);
                     }
-                });
+                }, new SpannableString("添加属性名"));
                 dialog.show(getSupportFragmentManager());
                 break;
             case R.id.btn_cancel:
                 finish();
                 break;
             case R.id.btn_save:
-                if (et_locat.getText().toString().equals("")){
-                    Toast.makeText(GoodsActivity.this, "请选择位置", Toast.LENGTH_SHORT).show();
+                db = helper.getWritableDatabase();
+                cv = new ContentValues();
+                for (Goods g : goodsList) {
+                    label.append(g.getLabel() + ";");
                 }
+                for (int i = 0; i < recyclerView.getChildCount(); i++) {                    //遍历recycleview，记录EditText的值
+                    RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
+                    EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
+                    value.append(et_goods_item.getText().toString() + ";");          //每个值的分隔符
+                }
+                cv.put("label", label.toString());
+                cv.put("value", value.toString());
+                cv.put("name", tv_name.getText().toString());
+                cv.put("img", imgbyte);
+                cv.put("pid", 0);
+                cv.put("class",classify);
+                cv.put("location",location);
+                Cursor cursor = db.query("goods", null, "name=?", new String[]{tv_name.getText().toString()}, null, null, null);
+                if (cursor.getCount() == 0)
+                    db.insert("goods", null, cv);
                 else {
-                    db=helper.getWritableDatabase();
-                    cv=new ContentValues();
-                    for (Goods g:goodsList)
-                    {
-                        label.append(g.getLabel()+";");
-                    }
-                    for (int i = 0; i < recyclerView.getChildCount(); i++) {                    //遍历recycleview，记录EditText的值
-                        RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
-                        EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
-                        value.append(et_goods_item.getText().toString()+";");          //每个值的分隔符
-                    }
-                    cv.put("label",label.toString());
-                    cv.put("value",value.toString());
-                    cv.put("name",tv_name.getText().toString());
-
-                    cv.put("img",imgbyte);
-
-
-
-
-
-//                    cv.put("locat_id",);
-                    Cursor cursor=db.query("goods",null,"name=?",new String[] {tv_name.getText().toString()},null,null,null);
-                    if (cursor.getCount() == 0)
-                        db.insert("goods",null,cv);
-                    else {
-                        db.update("goods",cv,"name=?",new String[] {tv_name.getText().toString()});
-                    }
-                    cursor.close();
-                    db.close();
-                    Toast.makeText(GoodsActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
-                    Intent intent=new Intent(GoodsActivity.this,GoodsShowActivity.class);
-                    startActivity(intent);
+                    db.update("goods", cv, "name=?", new String[]{tv_name.getText().toString()});
                 }
+                cursor.close();
+                db.close();
+                LoadToast(this, "success", "保存中...", 2500);
+                Intent intent = new Intent(GoodsActivity.this, GoodsShowActivity.class);
+                intent.putExtra("name", tv_name.getText().toString());
+                startActivity(intent);
         }
     }
     protected void showPopupMenu(View v){
@@ -245,18 +270,28 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch(menuItem.getItemId()) {
                     case R.id.btn_choose_locat:
-                      Intent intent=new Intent(GoodsActivity.this, SelectLocationActivity.class);
-                      intent.putExtra("label",labels);
-                      intent.putExtra("classify",classify);
-                      intent.putExtra("flage","cl");
-                      startActivity(intent);
+                        Intent intent = new Intent(GoodsActivity.this, SelectLocationActivity.class);
+                        for (Goods g:goodsList)
+                        {
+                            label.append(g.getLabel()+";");
+                        }
+                        intent.putExtra("label", label.toString());
+                        intent.putExtra("classify", classify);
+                        intent.putExtra("name",tv_name.getText().toString());
+                        intent.putExtra("flage", "cl");
+                        startActivity(intent);
                         finish();
                         break;
                     case R.id.btn_edit_locat:
-                      Intent intent1=new Intent(GoodsActivity.this, GoodsLocatActivity.class);
-                      intent1.putExtra("flage","cl");
-                        intent1.putExtra("label",labels);
-                        intent1.putExtra("classify",classify);
+                        Intent intent1 = new Intent(GoodsActivity.this, GoodsLocatActivity.class);
+                        intent1.putExtra("flage", "cl");
+                        for (Goods g:goodsList)
+                        {
+                            label.append(g.getLabel()+";");
+                        }
+                        intent1.putExtra("label", label.toString());
+                        intent1.putExtra("name",tv_name.getText().toString());
+                        intent1.putExtra("classify", classify);
                         startActivity(intent1);
                         finish();
                         break;
@@ -288,7 +323,6 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                 case PHOTO_TK:
                     //获取图库结果，执行裁剪
                     startPhotoZoom(data.getData());
-
                     break;
                 case PHOTO_CLIP:
                     //裁剪完成后的操作，上传至服务器或者本地设置
@@ -338,6 +372,25 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
        // intent.putExtra("noFaceDetection", true);
         startActivityForResult(intent, PHOTO_CLIP);
     }
-
+    //保存按钮动效
+    public void LoadToast(Context context, final String mode, final String text, final int time) {
+        final LoadToast lt = new LoadToast(context);
+        lt.setText(text).setBackgroundColor(Color.parseColor("#81C9FF")).setTextColor(0xffffff).setTranslationY(300).setProgressColor(Color.parseColor("#ffffff"));
+        lt.show();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                switch (mode) {
+                    case "success":
+                        lt.success();
+                        break;
+                    case "error":
+                        lt.error();
+                        break;
+                }
+            }
+        }, time);
+    }
 }
 

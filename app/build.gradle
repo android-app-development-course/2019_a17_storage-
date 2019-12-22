@@ -36,4 +36,6 @@ dependencies {
     //底部对话框
     implementation 'me.shaohui:bottomdialog:1.1.9'
     implementation 'com.bigkoo:alertview:1.0.3'
+    //Toast
+    implementation 'net.steamcrafted:load-toast:1.0.12'
 }

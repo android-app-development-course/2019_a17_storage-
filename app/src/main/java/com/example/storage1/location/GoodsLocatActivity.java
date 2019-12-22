@@ -56,6 +56,7 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
     private Intent intent;
     private String label;
     private String classify;
+    private String name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,17 +66,18 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
         if (intent.getStringExtra("flage").equals("cl")){
             label=intent.getStringExtra("label");
             classify=intent.getStringExtra("classify");
+            name=intent.getStringExtra("name");
         }
 
 
 
-        String name;
+        String first;
         Goods goods;
-        if(intent.getStringExtra("name")!=null){
-            name=intent.getStringExtra("name");
+        if(intent.getStringExtra("first")!=null){
+            first=intent.getStringExtra("first");
 
             pid=intent.getStringExtra("id");
-             goods=new Goods("一级",name);
+             goods=new Goods("一级",first);
             goodsList.add(goods);
             Goods goods1 = new Goods(getLocatText(n), "");
             goodsList.add(goods1);
@@ -190,11 +192,12 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
                     StringBuilder Loca=new StringBuilder();
 
                     Intent intent1=new Intent(GoodsLocatActivity.this, GoodsActivity.class);
-                    for(int i=location_date.size()-1;i>=0;--i)
+                    for(int i=0;i<location_date.size();++i)
                         Loca.append(location_date.get(i)+"/");
                     intent1.putExtra("location",Loca.toString());
                     intent1.putExtra("classify",classify);
                     intent1.putExtra("label",label);
+                    intent1.putExtra("name",name);
                     lastid+=1;
                     intent1.putExtra("pid",lastid+"");
                     startActivity(intent1);

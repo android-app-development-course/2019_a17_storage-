@@ -146,7 +146,9 @@ public class EditLocationActivity extends AppCompatActivity{
                     Cursor  cursor=db.query("loca",null,"name=?",new String[]{selectedNode.get(0).getName()},null,null,null);
                 cursor.moveToFirst();
                 intent2.putExtra("id",cursor.getInt(0)+"");
-                intent2.putExtra("name",cursor.getString(2));}
+                intent2.putExtra("first",cursor.getString(2));
+                    intent2.putExtra("flage","edit");
+                }
                 startActivity(intent2);
             }
         });

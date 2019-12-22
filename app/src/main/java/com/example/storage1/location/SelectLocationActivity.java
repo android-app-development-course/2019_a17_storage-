@@ -34,6 +34,7 @@ public class SelectLocationActivity extends AppCompatActivity {
     private String flage;  //判断执行位置的选择是转移位置的时候，还是选择位置的时候
     private String label;
     private String classify;
+    private String name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +58,7 @@ public class SelectLocationActivity extends AppCompatActivity {
         if (flage.equals("cl")){
             label=intent.getStringExtra("label");
             classify=intent.getStringExtra("classify");
+            name=intent.getStringExtra("name");
         }
 
 
@@ -130,6 +132,7 @@ public class SelectLocationActivity extends AppCompatActivity {
                     intent1.putExtra("location",Loca.toString());
                     intent1.putExtra("classify",classify);
                     intent1.putExtra("label",label);
+                    intent1.putExtra("name",name);
                     intent1.putExtra("pid",LocaNode.get(0).getId());
                     startActivity(intent1);
                     finish();
