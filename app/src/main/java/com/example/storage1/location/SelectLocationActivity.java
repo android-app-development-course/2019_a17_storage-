@@ -140,7 +140,8 @@ public class SelectLocationActivity extends AppCompatActivity {
                     intent1.putExtra("pid",LocaNode.get(0).getId());
                     if (image!=null)
                         intent1.putExtra("image",image);
-                    intent1.putExtra("value",value);
+                    if (value!=null)
+                        intent1.putExtra("value",value);
                     startActivity(intent1);
                     finish();
                 }

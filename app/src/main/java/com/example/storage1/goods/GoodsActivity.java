@@ -154,8 +154,10 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                 pid=cursor.getString(2);
                 et_locat.setText(cursor.getString(8));
                 et_category.setText(cursor.getString(3));
-                if (cursor.getBlob(7)!=null)
-                    iv_goods.setImageBitmap(BitmapFactory.decodeByteArray(cursor.getBlob(7), 0, cursor.getBlob(7).length));
+                if (cursor.getBlob(7)!=null) {
+                    imgbyte=cursor.getBlob(7);
+                    iv_goods.setImageBitmap(BitmapFactory.decodeByteArray(imgbyte, 0, imgbyte.length));
+                }
                 cursor.close();
                 db.close();
                 GoodsAdapter ga = new GoodsAdapter(goodsList);
@@ -166,11 +168,12 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
             et_locat.setText(location);
             et_category.setText(classify);
             label2=labels.split(";");
-            if (intent.getByteArrayExtra("image")!=null)
-                iv_goods.setImageBitmap(BitmapFactory.decodeByteArray(intent.getByteArrayExtra("image"), 0, intent.getByteArrayExtra("image").length));
+            if (intent.getByteArrayExtra("image")!=null) {
+                imgbyte=intent.getByteArrayExtra("image");
+                iv_goods.setImageBitmap(BitmapFactory.decodeByteArray(imgbyte, 0, imgbyte.length));
+            }
             if (values!=null) {
                 value2 = values.split(";");
-
                 for (int i = 0; i < label2.length; ++i) {
                     Goods goods = new Goods(label2[i], value2[i]);
                     if (!label2[i].equals("") && !value2.equals(""))                            //防止啥都没输入还显示出来
@@ -271,13 +274,16 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                 cv = new ContentValues();
                 label.delete(0,label.length());
                 value.delete(0,value.length());
-                for (Goods g : goodsList) {
-                    label.append(g.getLabel() + ";");
-                }
                 for (int i = 0; i < recyclerView.getChildCount(); i++) {                    //遍历recycleview，记录EditText的值
                     RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
                     EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
-                    value.append(et_goods_item.getText().toString() + ";");          //每个值的分隔符
+                    if (et_goods_item.getText().toString().equals(""))
+                        goodsList.remove(i);
+                    else
+                        value.append(et_goods_item.getText().toString() + ";");          //每个值的分隔符
+                }
+                for (Goods g : goodsList) {
+                    label.append(g.getLabel() + ";");
                 }
                 cv.put("label", label.toString());
                 cv.put("value", value.toString());
@@ -314,15 +320,21 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                         value.delete(0,value.length());
                         for (Goods g:goodsList)
                         {
-                            label.append(g.getLabel()+";");
-                        }
+                        label.append(g.getLabel()+";");
+                    }
                         for (int i = 0; i < recyclerView.getChildCount(); i++) {                    //遍历recycleview，记录EditText的值
                             RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
                             EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
+                            if (et_goods_item.getText().toString().equals(""))
+                            {
+                                value.append(" ;");
+                            }
+                            else
                             value.append(et_goods_item.getText().toString() + ";");          //每个值的分隔符
                         }
                         intent.putExtra("label", label.toString());
-                        intent.putExtra("value",value.toString());
+                        if (value!=null)
+                            intent.putExtra("value",value.toString());
                         intent.putExtra("classify", et_category.getText());
                         intent.putExtra("name",tv_name.getText().toString());
                         intent.putExtra("flage", "cl");
@@ -343,10 +355,16 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                         for (int i = 0; i < recyclerView.getChildCount(); i++) {                    //遍历recycleview，记录EditText的值
                             RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
                             EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
-                            value.append(et_goods_item.getText().toString() + ";");          //每个值的分隔符
+                            if (et_goods_item.getText().toString().equals(""))
+                            {
+                                value.append(" ;");
+                            }
+                            else
+                                value.append(et_goods_item.getText().toString() + ";");          //每个值的分隔符
                         }
                         intent1.putExtra("label", label.toString());
-                        intent1.putExtra("value",value.toString());
+                        if (value!=null)
+                            intent1.putExtra("value",value.toString());
                         intent1.putExtra("name",tv_name.getText().toString());
                         intent1.putExtra("classify", et_category.getText());
                         if (imgbyte!=null)

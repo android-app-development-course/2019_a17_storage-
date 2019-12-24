@@ -209,7 +209,8 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
                     intent1.putExtra("pid",lastid+"");
                     if (image!=null)
                         intent1.putExtra("image",image);
-                    intent1.putExtra("value",value);
+                    if (value!=null)
+                        intent1.putExtra("value",value);
                     startActivity(intent1);
                     finish();
                 }

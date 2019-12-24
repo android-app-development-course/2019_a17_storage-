@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.storage1.classify.ExcluLabelActivity;
 import com.example.storage1.main.MainActivity;
 import com.example.storage1.MyHelper;
 import com.example.storage1.R;
@@ -126,6 +127,7 @@ public class EditLocationActivity extends AppCompatActivity{
 
 
                 }
+                Toast.makeText(EditLocationActivity.this,"删除成功",Toast.LENGTH_SHORT).show();
                 db.close();
 
                 //刷新页面数据

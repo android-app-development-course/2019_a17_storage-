@@ -121,7 +121,7 @@ class WgwAdapter extends RecyclerView.Adapter<WgwAdapter.MyViewHolder> {
         imglist=new ArrayList<Bitmap>();
 
         SQLiteDatabase db=myHelper.getReadableDatabase();
-        Cursor cursor=db.query("goods",null,null,null,null,null,null);
+        Cursor cursor=db.query("goods",null,"pid=?",new String[]{"0"},null,null,null);
         if(cursor.getCount()!=0){
             cursor.moveToFirst();
             namelist.add(cursor.getString(4));
