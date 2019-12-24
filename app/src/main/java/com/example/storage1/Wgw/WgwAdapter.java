@@ -1,6 +1,10 @@
 package com.example.storage1.Wgw;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.storage1.MyHelper;
 import com.example.storage1.R;
 
 import java.util.ArrayList;
@@ -19,10 +24,13 @@ class WgwAdapter extends RecyclerView.Adapter<WgwAdapter.MyViewHolder> {
     private List<Integer> mDates;
     private int[] img;
     private Context mcontext;
-
+    private List<String> namelist;
+    private List<Bitmap> imglist;
+    private MyHelper myHelper;
 
     public WgwAdapter(Context context){
         this.mcontext=context;
+        myHelper=new MyHelper(context);
         initData();
     }
 
@@ -59,9 +67,10 @@ class WgwAdapter extends RecyclerView.Adapter<WgwAdapter.MyViewHolder> {
     }
     @Override
     public void onBindViewHolder(MyViewHolder holder,final int position){
-        holder.tv_name.setText("第"+mDates.get(position).toString()+"衣服");
-        holder.imgv.setImageResource(img[position]);
-
+        holder.tv_name.setText(namelist.get(position));
+        holder.tv_loca.setText("未放置");
+        if(imglist.get(position)!=null)
+            holder.imgv.setImageBitmap(imglist.get(position));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,7 +98,7 @@ class WgwAdapter extends RecyclerView.Adapter<WgwAdapter.MyViewHolder> {
     @Override
 
     public int getItemCount(){
-        return mDates.size();
+        return namelist.size();
     }
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView tv_name;
@@ -107,15 +116,42 @@ class WgwAdapter extends RecyclerView.Adapter<WgwAdapter.MyViewHolder> {
 
 
     protected void initData() {
-        mDates = new ArrayList<Integer>();
-        for (int i = 1; i <= 3; i++) {
-            mDates.add(i);
+        namelist=new ArrayList<String>();
+
+        imglist=new ArrayList<Bitmap>();
+
+        SQLiteDatabase db=myHelper.getReadableDatabase();
+        Cursor cursor=db.query("goods",null,null,null,null,null,null);
+        if(cursor.getCount()!=0){
+            cursor.moveToFirst();
+            namelist.add(cursor.getString(4));
+            byte[] in = cursor.getBlob(cursor.getColumnIndex("img"));
+            if(in!=null){
+                Bitmap bmpout = BitmapFactory.decodeByteArray(in, 0, in.length);
+                imglist.add(bmpout);
+
+            }
+            else{
+
+                imglist.add(null);
+            }
+        }
+        while(cursor.moveToNext()){
+            namelist.add(cursor.getString(4));
+            byte[]  in = cursor.getBlob(cursor.getColumnIndex("img"));
+            if(in!=null){
+                Bitmap bmpout = BitmapFactory.decodeByteArray(in, 0, in.length);
+                imglist.add(bmpout);
+
+            }
+            else{
+
+                imglist.add(null);
+            }
         }
 
-        img=new int[]{
-                R.drawable.cloth, R.drawable.cloth1, R.drawable.cloth2
-
-        };
+        cursor.close();
+        db.close();
     }
 }
 

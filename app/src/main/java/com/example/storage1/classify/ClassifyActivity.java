@@ -99,7 +99,7 @@ public class ClassifyActivity extends AppCompatActivity{
                     intent1.putExtra("name",cursor.getString(2));}
 
                 startActivity(intent1);
-
+                finish();
 
 
 
