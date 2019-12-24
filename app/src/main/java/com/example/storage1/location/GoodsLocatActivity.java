@@ -49,7 +49,7 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
     private SQLiteDatabase db;
     private ContentValues cv;
     private int n=1;
-    private int lastid;
+    private int lastid=0;
     private String pid;
     private boolean flage=false; //判断是不是在原有的数据再添加位置
     private MyHelper myHelper;
@@ -92,9 +92,9 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
         //去数据库最后的递增id
         SQLiteDatabase db=myHelper.getReadableDatabase();
         Cursor cursor=db.query("loca",null,null,null,null,null,null);
-        if(cursor.getCount()!=0)
+        if(cursor.getCount()!=0){
         cursor.moveToLast();
-        lastid=cursor.getInt(0);
+        lastid=cursor.getInt(0);}
 
 
 

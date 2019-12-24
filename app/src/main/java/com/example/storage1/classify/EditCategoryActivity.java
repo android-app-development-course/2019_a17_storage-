@@ -1,35 +1,24 @@
 package com.example.storage1.classify;
-
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.storage1.MyHelper;
 import com.example.storage1.R;
 import com.example.storage1.goods.Goods;
 import com.example.storage1.goods.GoodsAdapter;
-import com.example.storage1.location.EditLocationActivity;
-import com.example.storage1.location.GoodsLocatActivity;
-
 import java.util.ArrayList;
 import java.util.List;
-
 public class EditCategoryActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button btn_add_line;
@@ -46,7 +35,7 @@ public class EditCategoryActivity extends AppCompatActivity implements View.OnCl
     private List<String> class_date=new ArrayList<String>();
     private int n=1;
 
-    private int lastid;
+    private int lastid=0;
     private String pid;
     private boolean flage=false; //判断是不是在原有的数据再添加位置
     private MyHelper myHelper;
@@ -63,7 +52,6 @@ public class EditCategoryActivity extends AppCompatActivity implements View.OnCl
         Goods goods;
         if(intent.getStringExtra("name")!=null){
             name=intent.getStringExtra("name");
-
             pid=intent.getStringExtra("id");
             goods=new Goods("一级",name);
             goodsList.add(goods);

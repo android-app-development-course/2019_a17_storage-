@@ -148,8 +148,9 @@ public class EditLocationActivity extends AppCompatActivity{
                 cursor.moveToFirst();
                 intent2.putExtra("id",cursor.getInt(0)+"");
                 intent2.putExtra("first",cursor.getString(2));
-                    intent2.putExtra("flage","edit");
+
                 }
+                intent2.putExtra("flage","edit");
                 startActivity(intent2);
             }
         });
