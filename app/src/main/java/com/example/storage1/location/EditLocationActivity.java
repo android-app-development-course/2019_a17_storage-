@@ -114,6 +114,7 @@ public class EditLocationActivity extends AppCompatActivity{
                 SQLiteDatabase db=myHelper.getWritableDatabase();
                 ContentValues values=new ContentValues();
                 values.put("pid","0");
+                values.put("location","未放置");
                 for(Node n:rNode){
                     if(n.isGoods()){
                         int number=db.update("goods",values,"name=?",new String[]{n.getName()});

@@ -101,7 +101,7 @@ public class SimpleFragment extends Fragment {
         }
         while(cursor2.moveToNext()){
             if(!cursor2.getString(2).equals("0"))
-                dataList.add(new Node<>(cursor2.getInt(1)+"",cursor2.getString(2),cursor2.getString(3)));
+                dataList.add(new Node<>(cursor2.getInt(1)+"",cursor2.getString(2),cursor2.getString(4)));
         }
         cursor1.close();
         cursor2.close();

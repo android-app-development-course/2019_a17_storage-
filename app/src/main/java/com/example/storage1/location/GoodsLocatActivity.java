@@ -92,6 +92,7 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
         //去数据库最后的递增id
         SQLiteDatabase db=myHelper.getReadableDatabase();
         Cursor cursor=db.query("loca",null,null,null,null,null,null);
+        if(cursor.getCount()!=0)
         cursor.moveToLast();
         lastid=cursor.getInt(0);
 
