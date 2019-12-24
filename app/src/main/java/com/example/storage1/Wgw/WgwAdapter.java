@@ -153,5 +153,18 @@ class WgwAdapter extends RecyclerView.Adapter<WgwAdapter.MyViewHolder> {
         cursor.close();
         db.close();
     }
+    public String getname(int i){
+        return namelist.get(i);
+    }
+    public void remove(String name){
+
+
+        SQLiteDatabase db=myHelper.getWritableDatabase();
+        int number=db.delete("goods","name=?",new String[]{name});
+        initData();
+        db.close();
+    }
+
+
 }
 

@@ -1,5 +1,6 @@
 package com.example.storage1.Wgw;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.storage1.DividerGridItemDecoration;
 import com.example.storage1.R;
 import com.example.storage1.goods.GoodsActivity;
+import com.example.storage1.goods.GoodsShowActivity;
 
 public class WgwgoodsActivity extends AppCompatActivity {
     private Toolbar mtoolbar;
@@ -31,14 +34,34 @@ public class WgwgoodsActivity extends AppCompatActivity {
         mWgladapter.setOnItemClickListener(new WgwAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {
-                Intent intent=new Intent(WgwgoodsActivity.this, GoodsActivity.class);
-                startActivity(intent);
+                Intent intent1=new Intent(WgwgoodsActivity.this, GoodsShowActivity.class);
+                intent1.putExtra("name",mWgladapter.getname(position));
+                startActivity(intent1);
             }
         });
         mWgladapter.setOnItemLongClickListener(new WgwAdapter.OnItemLongClickListener() {
             @Override
             public void onClick(int position) {
-                Toast.makeText(getApplicationContext(), "long click " + position, Toast.LENGTH_SHORT).show();
+                final String name = mWgladapter.getname(position);
+                AlertDialog alertDialog = new AlertDialog.Builder(WgwgoodsActivity.this)
+                        .setTitle("删除日记")
+                        .setMessage("是否删除日记")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mWgladapter.remove(name);
+                                mWgladapter.notifyDataSetChanged();
+                                Toast.makeText(WgwgoodsActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                return;
+                            }
+                        }).create();
+                alertDialog.show();
+
             }
         });
         mLayoutManager = new GridLayoutManager(getApplicationContext(),2);
