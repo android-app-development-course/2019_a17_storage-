@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +30,6 @@ public class EditCategoryActivity extends AppCompatActivity implements View.OnCl
     private EditText et_locat;
     private RecyclerView recyclerView;
     private ArrayList<Goods> goodsList = new ArrayList<>();
-    private MyHelper helper;
 
     private ContentValues cv;
     private List<String> class_date=new ArrayList<String>();
@@ -65,16 +65,20 @@ public class EditCategoryActivity extends AppCompatActivity implements View.OnCl
             goodsList.add(goods);
             pid="0";//根节点
         }
-        lastid=Integer.parseInt(intent.getStringExtra("lastid"));
-        Log.e("tz", "lastid: " + lastid);
-
-
-
-
-
-
         myHelper=new MyHelper(EditCategoryActivity.this);
-        helper=new MyHelper(this);
+        //去数据库最后的递增id
+        SQLiteDatabase db=myHelper.getReadableDatabase();
+        Cursor cursor=db.query("loca",null,null,null,null,null,null);
+        if(cursor.getCount()!=0){
+            cursor.moveToLast();
+            lastid=cursor.getInt(0);}
+
+
+
+
+
+
+
         init();
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);          //recyclerview里面采用线性布局
