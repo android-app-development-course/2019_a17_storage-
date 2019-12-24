@@ -67,6 +67,12 @@ public class EditCategoryActivity extends AppCompatActivity implements View.OnCl
         }
         lastid=Integer.parseInt(intent.getStringExtra("lastid"));
         Log.e("tz", "lastid: " + lastid);
+
+
+
+
+
+
         myHelper=new MyHelper(EditCategoryActivity.this);
         helper=new MyHelper(this);
         init();

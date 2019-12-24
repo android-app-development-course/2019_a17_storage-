@@ -43,6 +43,7 @@ public class GoodsFragment extends Fragment {
     private ContentValues cv;
 
     private PublishDialog publishDialog;
+    private String title;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,8 +54,6 @@ public class GoodsFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
-
-
         mRecyclerView = view.findViewById(R.id.recycler_view);
 
 
@@ -163,12 +162,14 @@ public class GoodsFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
     }
-//    //搜索框按钮
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.search_bar,menu);
-//        super.onCreateOptionsMenu(menu, inflater);
-//    }
 
 
+    public void setTitle(String title){
+        this.title=title;
+
+        mMyAdapter.notifyDataSetChanged();
+
+
+
+    }
 }

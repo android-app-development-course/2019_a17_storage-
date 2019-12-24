@@ -88,15 +88,16 @@ public class ClassifyActivity extends AppCompatActivity{
 
                 Intent intent1=new Intent(ClassifyActivity.this,EditCategoryActivity.class);
                 SQLiteDatabase db=myHelper.getReadableDatabase();
-                Cursor cursor=db.query("class",null,null,null,null,null,null);
-                cursor.moveToLast();
-                intent1.putExtra("lastid",cursor.getInt(0)+"");
+//                Cursor cursor=db.query("class",null,null,null,null,null,null);
+//                cursor.moveToLast();
+//                intent1.putExtra("lastid",cursor.getInt(0)+"");
                 if(mAdapter.getSelectedNode().size()!=0){
                     List<Node> selectedNode=mAdapter.getSelectedNode();
-                    cursor=db.query("class",null,"name=?",new String[]{selectedNode.get(0).getName()},null,null,null);
+                   Cursor cursor=db.query("class",null,"name=?",new String[]{selectedNode.get(0).getName()},null,null,null);
                     cursor.moveToFirst();
                     intent1.putExtra("id",cursor.getInt(0)+"");
                     intent1.putExtra("name",cursor.getString(2));}
+
                 startActivity(intent1);
 
 

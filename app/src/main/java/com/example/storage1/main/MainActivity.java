@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.SearchView;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mVpHome;
     private BottomNavigationBar mBottomNavigationBar;
     private ArrayList<Fragment> mFragmentList = new ArrayList<>();
-
+    private GoodsFragment mgoodsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +73,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        mgoodsFragment=new GoodsFragment();
 
-        mFragmentList.add(new GoodsFragment());
+        mFragmentList.add(mgoodsFragment);
 
         mFragmentList.add(new SimpleFragment());
     //页面切换函数
@@ -174,10 +176,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
+                mgoodsFragment.setTitle(query);
 
 
-                //清除焦点，收软键盘
-                //mSearchView.clearFocus();
 
                 return false;
             }
@@ -185,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
             // 当搜索内容改变时触发该方法
             @Override
             public boolean onQueryTextChange(String newText) {
+
 
                 return false;
             }
