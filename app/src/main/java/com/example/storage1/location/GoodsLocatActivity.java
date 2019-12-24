@@ -57,6 +57,8 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
     private String label;
     private String classify;
     private String name;
+    private byte[] image;
+    private String value;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +69,8 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
             label=intent.getStringExtra("label");
             classify=intent.getStringExtra("classify");
             name=intent.getStringExtra("name");
+            image=intent.getByteArrayExtra("image");
+            value=intent.getStringExtra("value");
         }
 
 
@@ -203,6 +207,9 @@ public class GoodsLocatActivity extends AppCompatActivity implements View.OnClic
                     intent1.putExtra("name",name);
                     lastid+=1;
                     intent1.putExtra("pid",lastid+"");
+                    if (image!=null)
+                        intent1.putExtra("image",image);
+                    intent1.putExtra("value",value);
                     startActivity(intent1);
                     finish();
                 }

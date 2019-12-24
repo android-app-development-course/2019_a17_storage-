@@ -99,7 +99,7 @@ public class GoodsFragment extends Fragment {
         helper=new MyHelper(getContext());
         //recyclerView的使用
         db = helper.getReadableDatabase();
-        Cursor cursor = db.query("goods", null, null, null, null, null, null);
+        Cursor cursor = db.query("goods", null, "pid<>?", new String[] {"0"}, null, null, null);
         if (cursor.getCount()!=0)
         {
             cursor.moveToFirst();

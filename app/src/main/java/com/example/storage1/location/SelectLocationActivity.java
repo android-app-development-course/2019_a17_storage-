@@ -35,6 +35,8 @@ public class SelectLocationActivity extends AppCompatActivity {
     private String label;
     private String classify;
     private String name;
+    private byte[] image;
+    private String value;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +61,8 @@ public class SelectLocationActivity extends AppCompatActivity {
             label=intent.getStringExtra("label");
             classify=intent.getStringExtra("classify");
             name=intent.getStringExtra("name");
+            image=intent.getByteArrayExtra("image");
+            value=intent.getStringExtra("value");
         }
 
 
@@ -134,6 +138,9 @@ public class SelectLocationActivity extends AppCompatActivity {
                     intent1.putExtra("label",label);
                     intent1.putExtra("name",name);
                     intent1.putExtra("pid",LocaNode.get(0).getId());
+                    if (image!=null)
+                        intent1.putExtra("image",image);
+                    intent1.putExtra("value",value);
                     startActivity(intent1);
                     finish();
                 }

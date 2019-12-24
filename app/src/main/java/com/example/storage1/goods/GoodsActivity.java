@@ -64,9 +64,11 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
     private static final int PHOTO_PZ = 1;
     //裁剪
     private static final int PHOTO_CLIP = 2;
+
+    private ByteArrayOutputStream baos;
     private Bitmap imgbitmap;
     private Uri contentUri;
-    private byte[] imgbyte=new byte[] {};; //图片字节数组
+    private byte[] imgbyte; //图片字节数组
 
     private Uri uritempFile;
     private static final String IMAGE_FILE_LOCATION = "file:///sdcard/temp.jpg";
@@ -82,7 +84,9 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
     private ImageView iv_goods;
 
     private String []label1;                                                            //取数据库的值
+    private String []label2;                                                            //存传过来的labels
     private String []value1;                                                            //取数据库
+    private String []value2;                                                            //存传过来的值
     private RecyclerView recyclerView;
     private StringBuilder label=new StringBuilder();                                    //保存所有标签的名字，以；分隔
     private StringBuilder value=new StringBuilder();                                    //保存所有标签的值，以；分隔
@@ -94,6 +98,7 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
 
     private String classify;
     private String labels;
+    private String values;
     private String location;
     private String pid;
     @Override
@@ -109,7 +114,6 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);          //recyclerview里面采用线性布局
         recyclerView.setLayoutManager(layoutManager);
         Intent intent=getIntent();
-        labels=intent.getStringExtra("label");
         if (intent.getStringExtra("name").equals("")) {                 //没有名字说明是新的界面
             //弹出对话框要求用户输入物品名称
             EditTextDialog dialog = new EditTextDialog(new EditTextDialog.PriorityListener() {
@@ -125,6 +129,8 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
             tv_name.setText(intent.getStringExtra("name"));
         }
         //获得类别数据和标签属性
+        labels=intent.getStringExtra("label");
+        values=intent.getStringExtra("value");
         classify=intent.getStringExtra("classify");
         location=intent.getStringExtra("location");
         if(location!=null){
@@ -132,7 +138,7 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
         }
         pid=intent.getStringExtra("pid");
         et_category.setText(classify);
-        if (intent.getStringExtra("isNew")!=null) {
+        if (intent.getStringExtra("isNew")!=null  && intent.getStringExtra("isNew").equals("false")) {                     //进入编辑页显示
             db = helper.getReadableDatabase();                      //取数据库的值
             Cursor cursor = db.query("goods", null, "name=?", new String[]{tv_name.getText().toString()}, null, null, null);
             if (cursor.getCount() != 0) {
@@ -145,16 +151,42 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                     if (!label1[i].equals("") && !value1.equals(""))                            //防止啥都没输入还显示出来
                         goodsList.add(goods);
                 }
+                pid=cursor.getString(2);
                 et_locat.setText(cursor.getString(8));
                 et_category.setText(cursor.getString(3));
-                iv_goods.setImageBitmap(BitmapFactory.decodeByteArray(cursor.getBlob(7), 0, cursor.getBlob(7).length));
+                if (cursor.getBlob(7)!=null)
+                    iv_goods.setImageBitmap(BitmapFactory.decodeByteArray(cursor.getBlob(7), 0, cursor.getBlob(7).length));
                 cursor.close();
                 db.close();
                 GoodsAdapter ga = new GoodsAdapter(goodsList);
                 recyclerView.setAdapter(ga);
             }
         }
+        else {
+            et_locat.setText(location);
+            et_category.setText(classify);
+            label2=labels.split(";");
+            if (intent.getByteArrayExtra("image")!=null)
+                iv_goods.setImageBitmap(BitmapFactory.decodeByteArray(intent.getByteArrayExtra("image"), 0, intent.getByteArrayExtra("image").length));
+            if (values!=null) {
+                value2 = values.split(";");
 
+                for (int i = 0; i < label2.length; ++i) {
+                    Goods goods = new Goods(label2[i], value2[i]);
+                    if (!label2[i].equals("") && !value2.equals(""))                            //防止啥都没输入还显示出来
+                        goodsList.add(goods);
+                }
+            }
+            else {
+                for (int i = 0; i < label2.length; ++i) {
+                    Goods goods = new Goods(label2[i], "");
+                    if (!label2[i].equals(""))                            //防止啥都没输入还显示出来
+                        goodsList.add(goods);
+                }
+            }
+            GoodsAdapter ga = new GoodsAdapter(goodsList);
+            recyclerView.setAdapter(ga);
+        }
         contentUri=Uri.fromFile(
                 new File(Environment.getExternalStorageDirectory(), "/temp.jpg"));
     }
@@ -237,6 +269,8 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
             case R.id.btn_save:
                 db = helper.getWritableDatabase();
                 cv = new ContentValues();
+                label.delete(0,label.length());
+                value.delete(0,value.length());
                 for (Goods g : goodsList) {
                     label.append(g.getLabel() + ";");
                 }
@@ -248,13 +282,6 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                 cv.put("label", label.toString());
                 cv.put("value", value.toString());
                 cv.put("name", tv_name.getText().toString());
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ((BitmapDrawable)iv_goods.getDrawable()).getBitmap().compress(Bitmap.CompressFormat.PNG, 100, baos);
-                imgbyte=baos.toByteArray();
-                if (imgbyte == null)                //如果没有照片显示
-                {
-                    imgbyte=new byte[] {};
-                }
                 cv.put("img",imgbyte);
                 cv.put("pid",pid);
                 cv.put("class",et_category.getText().toString());
@@ -283,27 +310,47 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                 switch(menuItem.getItemId()) {
                     case R.id.btn_choose_locat:
                         Intent intent = new Intent(GoodsActivity.this, SelectLocationActivity.class);
+                        label.delete(0,label.length());
+                        value.delete(0,value.length());
                         for (Goods g:goodsList)
                         {
                             label.append(g.getLabel()+";");
                         }
+                        for (int i = 0; i < recyclerView.getChildCount(); i++) {                    //遍历recycleview，记录EditText的值
+                            RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
+                            EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
+                            value.append(et_goods_item.getText().toString() + ";");          //每个值的分隔符
+                        }
                         intent.putExtra("label", label.toString());
-                        intent.putExtra("classify", classify);
+                        intent.putExtra("value",value.toString());
+                        intent.putExtra("classify", et_category.getText());
                         intent.putExtra("name",tv_name.getText().toString());
                         intent.putExtra("flage", "cl");
+                        if (imgbyte!=null)
+                            intent.putExtra("image",imgbyte);
                         startActivity(intent);
                         finish();
                         break;
                     case R.id.btn_edit_locat:
                         Intent intent1 = new Intent(GoodsActivity.this, GoodsLocatActivity.class);
                         intent1.putExtra("flage", "cl");
+                        label.delete(0,label.length());
+                        value.delete(0,value.length());
                         for (Goods g:goodsList)
                         {
                             label.append(g.getLabel()+";");
                         }
+                        for (int i = 0; i < recyclerView.getChildCount(); i++) {                    //遍历recycleview，记录EditText的值
+                            RelativeLayout layout = (RelativeLayout) recyclerView.getChildAt(i);
+                            EditText et_goods_item = layout.findViewById(R.id.et_goods_item);
+                            value.append(et_goods_item.getText().toString() + ";");          //每个值的分隔符
+                        }
                         intent1.putExtra("label", label.toString());
+                        intent1.putExtra("value",value.toString());
                         intent1.putExtra("name",tv_name.getText().toString());
-                        intent1.putExtra("classify", classify);
+                        intent1.putExtra("classify", et_category.getText());
+                        if (imgbyte!=null)
+                        intent1.putExtra("image",imgbyte);
                         startActivity(intent1);
                         finish();
                         break;
@@ -343,7 +390,7 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                         imgbitmap= BitmapFactory.decodeStream( getContentResolver().openInputStream(uritempFile) );
                         iv_goods.setImageBitmap(imgbitmap);
                         //将图片装换为字节流
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        baos = new ByteArrayOutputStream();
                         imgbitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
                         imgbyte=baos.toByteArray();
 

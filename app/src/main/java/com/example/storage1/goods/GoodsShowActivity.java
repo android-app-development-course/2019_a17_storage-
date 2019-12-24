@@ -64,7 +64,8 @@ public class GoodsShowActivity extends AppCompatActivity implements View.OnClick
         if (cursor.getCount() != 0) {
             cursor.moveToNext();
             //位置
-            iv_goods.setImageBitmap(BitmapFactory.decodeByteArray(cursor.getBlob(7), 0, cursor.getBlob(7).length));
+            if (cursor.getBlob(7)!=null)
+                iv_goods.setImageBitmap(BitmapFactory.decodeByteArray(cursor.getBlob(7), 0, cursor.getBlob(7).length));
             et_locat.setText(cursor.getString(8));
             et_category.setText(cursor.getString(3));
             label = cursor.getString(5).split(";");

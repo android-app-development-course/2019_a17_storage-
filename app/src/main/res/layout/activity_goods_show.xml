@@ -71,7 +71,6 @@
                     android:id="@+id/iv_goods"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
-                    android:src="@drawable/red_shoes"
                     android:layout_centerHorizontal="true"
                     />
             </RelativeLayout>

@@ -102,6 +102,7 @@ public class SelecteClassActivity extends AppCompatActivity {
             Class.append(ClassNode.get(i).getName()+"/");
             intent.putExtra("classify",Class.toString());
             intent.putExtra("name","");
+            intent.putExtra("isNew","true");
            db.close();
            startActivity(intent);
            finish();

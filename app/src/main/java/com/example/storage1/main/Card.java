@@ -8,10 +8,6 @@ public class Card {
     private String loca;
     private byte[] img;
 
-    public Card() {
-        img=new byte[] {};
-    }
-
     public Card(String name, String loca,byte[] img) {
         this.name = name;
         this.loca = loca;

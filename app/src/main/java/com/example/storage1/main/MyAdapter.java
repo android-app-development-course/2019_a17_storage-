@@ -64,7 +64,8 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             Card card = CardList.get(position);
             holder.tv_name.setText(card.getName());
             holder.tv_loca.setText(card.getLoca());
-            holder.imgv.setImageBitmap(BitmapFactory.decodeByteArray(card.getImg(), 0, card.getImg().length));
+            if (card.getImg()!=null)
+                holder.imgv.setImageBitmap(BitmapFactory.decodeByteArray(card.getImg(), 0, card.getImg().length));
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
