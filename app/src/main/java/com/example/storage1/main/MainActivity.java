@@ -178,8 +178,6 @@ public class MainActivity extends AppCompatActivity {
 
                 mgoodsFragment.setTitle(query);
 
-
-
                 return false;
             }
 
@@ -188,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
 
 
+                mgoodsFragment.setTitle("");
                 return false;
             }
         });

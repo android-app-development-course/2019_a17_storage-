@@ -164,12 +164,38 @@ public class GoodsFragment extends Fragment {
     }
 
 
-    public void setTitle(String title){
-        this.title=title;
-
-        mMyAdapter.notifyDataSetChanged();
-
-
-
+    public void setTitle(String s){
+        title=s;
+        cardList.clear();
+        if (title.equals("")) {
+            db = helper.getReadableDatabase();
+            Cursor cursor = db.query("goods", null, null, null, null, null, null);
+            if (cursor.getCount()!=0)
+            {
+                cursor.moveToFirst();
+                card = new Card(cursor.getString(4),cursor.getString(8),cursor.getBlob(7));
+                cardList.add(card);
+                while (cursor.moveToNext()) {
+                    card = new Card(cursor.getString(4),cursor.getString(8),cursor.getBlob(7));
+                    cardList.add(card);
+                }
+            }
+            cursor.close();
+            db.close();
+            mMyAdapter.notifyDataSetChanged();
+        }
+        else {
+            db = helper.getReadableDatabase();
+            Cursor cursor = db.query("goods", null, "name=?", new String[] {title}, null, null, null);
+            if (cursor.getCount()!=0)
+            {
+                cursor.moveToNext();
+                card = new Card(cursor.getString(4),cursor.getString(8),cursor.getBlob(7));
+                cardList.add(card);
+            }
+            cursor.close();
+            db.close();
+            mMyAdapter.notifyDataSetChanged();
+        }
     }
 }
