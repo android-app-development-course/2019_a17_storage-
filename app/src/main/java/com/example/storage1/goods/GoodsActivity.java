@@ -130,26 +130,29 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
         if(location!=null){
             et_locat.setText(location);
         }
+        pid=intent.getStringExtra("pid");
         et_category.setText(classify);
-        db = helper.getReadableDatabase();
-        Cursor cursor = db.query("goods", null, "name=?", new String[]{tv_name.getText().toString()}, null, null, null);
-        if (cursor.getCount() != 0) {
-            cursor.moveToNext();
-            //位置
-            label1 = cursor.getString(5).split(";");
-            value1 = cursor.getString(6).split(";");
-            for (int i = 0; i < label1.length; ++i) {
-                Goods goods = new Goods(label1[i], value1[i]);
-                if (!label1[i].equals("") && !value1.equals(""))                            //防止啥都没输入还显示出来
-                    goodsList.add(goods);
+        if (intent.getStringExtra("isNew")!=null) {
+            db = helper.getReadableDatabase();                      //取数据库的值
+            Cursor cursor = db.query("goods", null, "name=?", new String[]{tv_name.getText().toString()}, null, null, null);
+            if (cursor.getCount() != 0) {
+                cursor.moveToNext();
+                //位置
+                label1 = cursor.getString(5).split(";");
+                value1 = cursor.getString(6).split(";");
+                for (int i = 0; i < label1.length; ++i) {
+                    Goods goods = new Goods(label1[i], value1[i]);
+                    if (!label1[i].equals("") && !value1.equals(""))                            //防止啥都没输入还显示出来
+                        goodsList.add(goods);
+                }
+                et_locat.setText(cursor.getString(8));
+                et_category.setText(cursor.getString(3));
+                iv_goods.setImageBitmap(BitmapFactory.decodeByteArray(cursor.getBlob(7), 0, cursor.getBlob(7).length));
+                cursor.close();
+                db.close();
+                GoodsAdapter ga = new GoodsAdapter(goodsList);
+                recyclerView.setAdapter(ga);
             }
-            et_locat.setText(cursor.getString(8));
-            et_category.setText(cursor.getString(3));
-            iv_goods.setImageBitmap(BitmapFactory.decodeByteArray(cursor.getBlob(7), 0, cursor.getBlob(7).length));
-            cursor.close();
-            db.close();
-            GoodsAdapter ga = new GoodsAdapter(goodsList);
-            recyclerView.setAdapter(ga);
         }
 
         contentUri=Uri.fromFile(
@@ -247,8 +250,13 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                 cv.put("name", tv_name.getText().toString());
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ((BitmapDrawable)iv_goods.getDrawable()).getBitmap().compress(Bitmap.CompressFormat.PNG, 100, baos);
-                cv.put("img", baos.toByteArray());
-                cv.put("pid", 0);
+                imgbyte=baos.toByteArray();
+                if (imgbyte == null)                //如果没有照片显示
+                {
+                    imgbyte=new byte[] {};
+                }
+                cv.put("img",imgbyte);
+                cv.put("pid",pid);
                 cv.put("class",et_category.getText().toString());
                 cv.put("location",et_locat.getText().toString());
                 Cursor cursor = db.query("goods", null, "name=?", new String[]{tv_name.getText().toString()}, null, null, null);
