@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -44,6 +45,7 @@ import com.example.storage1.R;
 import com.example.storage1.location.EditLocationActivity;
 import com.example.storage1.location.GoodsLocatActivity;
 import com.example.storage1.location.SelectLocationActivity;
+import com.example.storage1.main.MainActivity;
 
 import net.steamcrafted.loadtoast.LoadToast;
 
@@ -243,10 +245,12 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                 cv.put("label", label.toString());
                 cv.put("value", value.toString());
                 cv.put("name", tv_name.getText().toString());
-                cv.put("img", imgbyte);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ((BitmapDrawable)iv_goods.getDrawable()).getBitmap().compress(Bitmap.CompressFormat.PNG, 100, baos);
+                cv.put("img", baos.toByteArray());
                 cv.put("pid", 0);
-                cv.put("class",classify);
-                cv.put("location",location);
+                cv.put("class",et_category.getText().toString());
+                cv.put("location",et_locat.getText().toString());
                 Cursor cursor = db.query("goods", null, "name=?", new String[]{tv_name.getText().toString()}, null, null, null);
                 if (cursor.getCount() == 0)
                     db.insert("goods", null, cv);
@@ -256,7 +260,7 @@ public class GoodsActivity extends AppCompatActivity implements View.OnClickList
                 cursor.close();
                 db.close();
                 LoadToast(this, "success", "保存中...", 2500);
-                Intent intent = new Intent(GoodsActivity.this, GoodsShowActivity.class);
+                Intent intent = new Intent(GoodsActivity.this, MainActivity.class);
                 intent.putExtra("name", tv_name.getText().toString());
                 startActivity(intent);
         }

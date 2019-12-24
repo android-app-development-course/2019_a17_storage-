@@ -137,7 +137,8 @@ public class GoodsFragment extends Fragment {
                         db.delete("goods", "name=?", new String[]{ cardList.get(position).getName()});   //删除长按选择的数据(根据名字)
                         Toast.makeText(getActivity(), "删除成功" , Toast.LENGTH_SHORT).show();
                         db.close();
-                        onStart();
+                        cardList.remove(position);
+                        mMyAdapter.notifyDataSetChanged();
                     }
                 });
                 //设置取消按钮事件
