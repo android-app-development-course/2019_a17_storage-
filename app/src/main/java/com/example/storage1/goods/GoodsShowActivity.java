@@ -72,7 +72,7 @@ public class GoodsShowActivity extends AppCompatActivity implements View.OnClick
             value = cursor.getString(6).split(";");
             for (int i = 0; i < label.length; ++i) {
                 Goods goods = new Goods(label[i], value[i]);
-                if (!label[i].equals("")&&!value.equals(""))
+                if (!label[i].equals("")&&!value[i].equals(""))
                     goodsList.add(goods);
             }
             cursor.close();
