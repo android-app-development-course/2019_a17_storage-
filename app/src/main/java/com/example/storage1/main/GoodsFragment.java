@@ -20,11 +20,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.storage1.DividerGridItemDecoration;
 import com.example.storage1.MyHelper;
+import com.example.storage1.classify.ClassifyActivity;
+import com.example.storage1.classify.EditCategoryActivity;
 import com.example.storage1.classify.SelecteClassActivity;
 import com.example.storage1.diaoog.PublishDialog;
 import com.example.storage1.R;
 import com.example.storage1.goods.GoodsActivity;
 import com.example.storage1.goods.GoodsShowActivity;
+import com.example.storage1.location.EditLocationActivity;
+import com.example.storage1.location.GoodsLocatActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -67,7 +71,11 @@ public class GoodsFragment extends Fragment {
                     publishDialog.setLinkClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(getContext(), "添加分类", Toast.LENGTH_SHORT).show();
+                            Intent intent2=new Intent(getContext(), GoodsLocatActivity.class);
+                            intent2.putExtra("flage","edit");
+                            startActivity(intent2);
+
+
                         }
                     });
                     publishDialog.setPhotoClickListener(new View.OnClickListener() {
@@ -80,13 +88,13 @@ public class GoodsFragment extends Fragment {
 
 
 
-
                         }
                     });
                     publishDialog.setCodeClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(getContext(), "添加位置", Toast.LENGTH_SHORT).show();
+                            Intent intent1=new Intent(getContext(), EditCategoryActivity.class);
+                            startActivity(intent1);
 
                         }
                     });

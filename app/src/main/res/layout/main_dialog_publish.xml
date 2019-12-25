@@ -33,13 +33,13 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center_horizontal"
                     android:contentDescription="@null"
-                    android:src="@drawable/ic_link" />
+                    android:src="@drawable/ic_classify" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="链接导入"
+                    android:text="添加分类"
                     android:layout_marginTop="15dp"
                     android:textColor="#fff" />
             </LinearLayout>
@@ -83,13 +83,13 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center_horizontal"
                     android:contentDescription="@null"
-                    android:src="@drawable/ic_bar_code"/>
+                    android:src="@drawable/ic_location"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="条形码导入"
+                    android:text="添加位置"
                     android:layout_marginTop="15dp"
                     android:textColor="#fff" />
             </LinearLayout>
