@@ -71,9 +71,8 @@ public class GoodsFragment extends Fragment {
                     publishDialog.setLinkClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent2=new Intent(getContext(), GoodsLocatActivity.class);
-                            intent2.putExtra("flage","edit");
-                            startActivity(intent2);
+                            Intent intent1=new Intent(getContext(), EditCategoryActivity.class);
+                            startActivity(intent1);
 
 
                         }
@@ -93,8 +92,11 @@ public class GoodsFragment extends Fragment {
                     publishDialog.setCodeClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent1=new Intent(getContext(), EditCategoryActivity.class);
-                            startActivity(intent1);
+                            Intent intent2=new Intent(getContext(), GoodsLocatActivity.class);
+                            intent2.putExtra("flage","edit");
+                            startActivity(intent2);
+
+
 
                         }
                     });
